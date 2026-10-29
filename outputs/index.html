@@ -1,0 +1,211 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="theme-color" content="#f5f6f2">
+  <meta name="description" content="A private, offline-first personal finance tracker.">
+  <title>Pocket Ledger — Entry</title>
+  <link rel="manifest" href="manifest.json">
+  <link rel="icon" href="assets/icon.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+  <main class="app-shell">
+    <header class="topbar" hidden>
+      <div class="brand"><span class="brand-mark" aria-hidden="true">₹</span><div><p class="eyebrow" data-i18n="yourMoney">YOUR MONEY, YOUR WAY</p><h1 data-i18n="appName">Pocket Ledger</h1></div></div>
+      <button class="theme-button" id="themeToggle" type="button" aria-label="Toggle color theme">◐</button>
+    </header>
+    <aside class="reminder-banner" id="reminderBanner" hidden role="status"><span id="reminderBannerText"></span><button type="button" id="reminderBannerOpen" data-i18n="openReminders">Open reminders</button></aside>
+
+    <section class="dashboard-view" id="dashboardView">
+      <div class="dashboard-header"><div class="dashboard-title"><div><p class="eyebrow" data-i18n="yourMoney">YOUR MONEY, YOUR WAY</p><h1 data-i18n="dashboard">Dashboard</h1></div><button class="theme-button" id="dashboardThemeToggle" type="button" aria-label="Toggle color theme">◐</button></div><div class="month-picker"><button id="previousMonth" type="button" aria-label="Previous month">‹</button><button id="dashboardMonthLabel" type="button">October 2026</button><button id="nextMonth" type="button" aria-label="Next month">›</button><input id="dashboardMonthPicker" type="month" aria-label="Pick month"></div></div>
+      <div id="dashboardContent">
+        <section class="dashboard-balance-section" aria-label="All-time account balances">
+          <article class="available-card" id="dashboardAvailableCard"><span data-i18n="totalBalance">Total Balance</span><strong id="dashboardAvailable">₹0</strong><small data-i18n="allTimeBalance">All time · includes Udhar</small></article>
+          <div class="dashboard-accounts-list" id="dashboardAccountsList"></div>
+          <button class="dashboard-add-bank" id="dashboardAddBankButton" type="button" data-i18n="addBankAccount" hidden>Add bank account</button>
+          <button class="dashboard-transfer-shortcut" id="dashboardTransferButton" type="button"><span aria-hidden="true">⇄</span><span data-i18n="cashBankTransfer">Cash ↔ Bank · Transfer</span></button>
+          <section class="account-transactions-sheet" id="accountTransactionsSheet" hidden role="dialog" aria-modal="true" aria-labelledby="accountSheetName">
+            <div class="account-sheet-heading"><div><p class="eyebrow" data-i18n="accountTransactions">ACCOUNT TRANSACTIONS</p><h3 id="accountSheetName"></h3></div><button type="button" id="closeAccountSheet" class="account-sheet-close" data-i18n-aria-label="close">×</button></div>
+            <strong class="account-sheet-balance" id="accountSheetBalance"></strong><div class="account-sheet-list" id="accountSheetList"></div>
+          </section>
+        </section>
+        <section class="dashboard-section"><div class="section-title-row"><div><p class="eyebrow" data-i18n="monthlyOverview">MONTHLY OVERVIEW</p><h2 data-i18n="monthlySummary">Monthly summary</h2></div></div><div class="dashboard-grid" id="monthlyCards"></div><p class="dashboard-hint" data-i18n="udharNotIncluded">Income, Expense, Investment and Savings exclude Udhar and Transfers.</p></section>
+        <section class="dashboard-welcome" id="dashboardWelcome" hidden><span>✳</span><h2 data-i18n="welcomeTitle">Your money, at a glance</h2><p data-i18n="welcomeBody">Add your first entry to see your dashboard come to life.</p><button type="button" id="firstEntryButton" data-i18n="addFirstEntry">Add your first entry</button></section>
+        <section class="dashboard-section"><div class="section-title-row"><div><p class="eyebrow" data-i18n="peopleAndBalances">PEOPLE &amp; BALANCES</p><h2 data-i18n="outstanding">Outstanding</h2></div><button type="button" class="text-link" id="dashboardViewAll" data-i18n="viewAll">View all</button></div><div class="dashboard-outstanding-totals"><div><span data-i18n="totalToReceive">Total to Receive</span><strong id="dashboardReceiveTotal">₹0</strong><small id="dashboardReceiveCount"></small></div><div><span data-i18n="totalToGive">Total to Give</span><strong id="dashboardGiveTotal">₹0</strong><small id="dashboardGiveCount"></small></div></div><div class="dashboard-top-people" id="dashboardTopPeople"></div></section>
+        <section class="dashboard-section chart-section"><div class="section-title-row"><div><p class="eyebrow" data-i18n="monthlyOverview">MONTHLY OVERVIEW</p><h2 data-i18n="expenseByCategory">Expense by category</h2></div></div><div class="chart-card"><div class="donut-layout"><div id="categoryDonut"></div><div id="categoryLegend" class="category-legend"></div></div><div class="chart-empty" id="categoryEmpty" hidden data-i18n="noDataThisMonth">No data for this month</div></div></section>
+        <section class="dashboard-section chart-section"><div class="section-title-row"><div><p class="eyebrow" data-i18n="sixMonthTrend">SIX MONTH TREND</p><h2 data-i18n="incomeVsExpense">Income vs Expense</h2></div></div><div class="chart-card"><div id="sixMonthChart"></div><div class="chart-legend"><span><i class="legend-income"></i><span data-i18n="income">Income</span></span><span><i class="legend-expense"></i><span data-i18n="expense">Expense</span></span></div><div class="chart-empty" id="sixMonthEmpty" hidden data-i18n="noDataThisMonth">No data for this month</div></div></section>
+        <section class="dashboard-section chart-section"><div class="section-title-row"><div><p class="eyebrow" data-i18n="dailyTrend">DAILY TREND</p><h2 data-i18n="dailyExpenseTrend">Daily expense trend</h2></div></div><div class="chart-card"><div id="dailyExpenseChart"></div><div class="chart-empty" id="dailyExpenseEmpty" hidden data-i18n="noDataThisMonth">No data for this month</div></div></section>
+        <section class="dashboard-section"><div class="section-title-row"><div><p class="eyebrow" data-i18n="allTime">ALL TIME</p><h2 data-i18n="investments">Investments</h2></div></div><button class="dashboard-investment-card" id="investmentSummaryCard" type="button"><div class="investment-summary-top"><span data-i18n="totalInvested">Total Invested</span><strong id="investmentTotal">₹0</strong></div><div class="investment-summary-grid"><span><small data-i18n="totalProfit">Total Profit</small><strong id="investmentProfitTotal">₹0</strong></span><span><small data-i18n="totalLoss">Total Loss</small><strong id="investmentLossTotal">₹0</strong></span><span><small data-i18n="netInvestmentResult">Net result</small><strong id="investmentNetTotal">₹0</strong></span></div><small class="investment-open-hint" data-i18n="viewInvestmentList">View investment list ›</small></button></section>
+        <section class="dashboard-section"><div class="section-title-row"><div><p class="eyebrow" data-i18n="upcomingRemindersLabel">UPCOMING REMINDERS</p><h2 data-i18n="reminders">Reminders</h2></div><button type="button" class="text-link" id="dashboardRemindersButton" data-i18n="viewAll">View all</button></div><div class="dashboard-reminders" id="dashboardReminders"><div class="dashboard-reminders-meta"><strong id="overdueReminderCount">0</strong><span data-i18n="overdueReminders">overdue</span></div><div id="upcomingReminderList"></div></div></section>
+        <section class="dashboard-section"><div class="section-title-row"><div><p class="eyebrow" data-i18n="yourActivity">YOUR ACTIVITY</p><h2 data-i18n="recentActivity">Recent activity</h2></div><button type="button" class="text-link" id="dashboardSeeAll" data-i18n="seeAll">See all</button></div><div class="entry-list dashboard-recent" id="dashboardRecent"></div><div class="chart-empty" id="dashboardRecentEmpty" hidden data-i18n="noRecentActivity">No recent activity yet.</div></section>
+        <section class="dashboard-section"><div class="section-title-row"><div><p class="eyebrow" data-i18n="quickInsights">QUICK INSIGHTS</p><h2 data-i18n="insights">Insights</h2></div></div><div class="insights-list"><p id="highestExpenseInsight"></p><p id="averageExpenseInsight"></p><p id="savingsRateInsight"></p></div></section>
+      </div>
+    </section>
+
+    <section class="investment-view" id="investmentView" hidden>
+      <div id="investmentListView">
+        <button class="back-button" id="backToDashboardFromInvestments" type="button"><span>←</span><span data-i18n="backToDashboard">Back to Dashboard</span></button>
+        <div class="section-title-row investment-page-heading"><div><p class="eyebrow" data-i18n="allTime">ALL TIME</p><h2 data-i18n="investmentList">Investment list</h2></div></div>
+        <div class="investment-filters" id="investmentFilters"></div>
+        <div class="investment-list" id="investmentList"></div>
+        <div class="investment-empty" id="investmentListEmpty" hidden><p data-i18n="noInvestmentsYet">No investments yet.</p><button type="button" id="investmentFirstEntry" data-i18n="addFirstEntry">Add your first entry</button></div>
+      </div>
+      <div id="investmentDetailView" hidden>
+        <button class="back-button" id="backToInvestmentList" type="button"><span>←</span><span data-i18n="backToInvestments">Back to investments</span></button>
+        <div class="investment-detail-heading"><p class="eyebrow" data-i18n="investmentHistory">INVESTMENT HISTORY</p><h2 id="investmentDetailName"></h2><p id="investmentDetailKind"></p></div>
+        <div class="investment-detail-totals" id="investmentDetailTotals"></div>
+        <div class="investment-quick-actions"><button type="button" data-investment-action="Investment" data-i18n="investMore">Invest more</button><button type="button" data-investment-action="Investment Profit" data-i18n="addProfit">Add Profit</button><button type="button" data-investment-action="Investment Loss" data-i18n="addLoss">Add Loss</button></div>
+        <div class="investment-history-list" id="investmentHistoryList"></div>
+      </div>
+    </section>
+
+    <section class="reports-view" id="reportsView" hidden>
+      <header class="reports-header"><p class="eyebrow" data-i18n="reports">REPORTS</p><h1 data-i18n="reports">Reports</h1></header>
+      <div class="report-filters" id="reportFilters">
+        <label><span data-i18n="period">Period</span><select id="reportPeriod" class="text-input"><option value="thisMonth" data-i18n="thisMonth">This Month</option><option value="lastMonth" data-i18n="lastMonth">Last Month</option><option value="thisYear" data-i18n="thisYear">This Year</option><option value="financialYear" data-i18n="financialYear">Financial Year Apr–Mar</option><option value="custom" data-i18n="customRange">Custom range</option></select></label>
+        <div class="report-custom-dates" id="reportCustomDates" hidden><label><span data-i18n="fromDate">From</span><input id="reportFrom" type="date" class="text-input"></label><label><span data-i18n="toDate">To</span><input id="reportTo" type="date" class="text-input"></label></div>
+        <label><span data-i18n="account">Account</span><select id="reportAccount" class="text-input"></select></label>
+        <label><span data-i18n="type">Type</span><select id="reportType" class="text-input"><option value="all" data-i18n="all">All</option><option value="credit" data-i18n="credit">Credit</option><option value="debit" data-i18n="debit">Debit</option></select></label>
+        <label><span data-i18n="category">Category</span><select id="reportCategory" class="text-input"></select></label>
+        <label><span data-i18n="person">Person</span><select id="reportPerson" class="text-input"></select></label>
+        <label class="include-udhar-control"><input id="includeUdhar" type="checkbox"><span data-i18n="includeUdhar">Include Udhar</span></label>
+      </div>
+      <div class="report-tabs" role="tablist"><button class="report-tab active" type="button" data-report-tab="summary" data-i18n="summary">Summary</button><button class="report-tab" type="button" data-report-tab="category" data-i18n="category">Category</button><button class="report-tab" type="button" data-report-tab="trend" data-i18n="monthlyTrend">Monthly Trend</button><button class="report-tab" type="button" data-report-tab="account" data-i18n="accountStatement">Account</button><button class="report-tab" type="button" data-report-tab="person" data-i18n="personStatement">Person</button><button class="report-tab" type="button" data-report-tab="investment" data-i18n="investmentReport">Investment</button></div>
+      <div class="report-actions"><button id="reportCsvButton" type="button" class="secondary-button" data-i18n="exportCsv">Export CSV</button><button id="reportPrintButton" type="button" class="secondary-button" data-i18n="printPdf">Print / Save PDF</button><button id="reportShareButton" type="button" class="secondary-button" data-i18n="shareReport">Share</button></div>
+      <div id="reportPanels">
+        <section class="report-panel active" id="reportSummaryPanel"></section><section class="report-panel" id="reportCategoryPanel"></section><section class="report-panel" id="reportTrendPanel"></section><section class="report-panel" id="reportAccountPanel"></section><section class="report-panel" id="reportPersonPanel"></section><section class="report-panel" id="reportInvestmentPanel"></section>
+      </div>
+      <div class="report-empty" id="reportEmpty" hidden></div>
+    </section>
+
+    <section class="pin-lock-screen" id="pinLockScreen" hidden><div class="pin-lock-card"><span class="brand-mark" aria-hidden="true">₹</span><h1 data-i18n="appName">Pocket Ledger</h1><p data-i18n="enterPin">Enter your 4-digit PIN</p><div class="pin-dots" id="pinDots"><i></i><i></i><i></i><i></i></div><p class="pin-error" id="pinError"></p><div class="pin-keypad" id="pinKeypad"></div><button type="button" id="forgotPinButton" class="text-link" data-i18n="forgotPin">Forgot PIN?</button></div></section>
+    <section class="pin-setup-overlay" id="pinSetupOverlay" hidden><form id="pinSetupForm" class="pin-setup-card"><h2 data-i18n="setPin">Set PIN</h2><p data-i18n="pinChooseHelp">Enter and confirm a 4-digit PIN.</p><input class="text-input" id="newPinInput" type="password" inputmode="numeric" pattern="[0-9]{4}" maxlength="4" placeholder="••••" required><input class="text-input" id="confirmPinInput" type="password" inputmode="numeric" pattern="[0-9]{4}" maxlength="4" placeholder="••••" required><p id="pinSetupError" class="pin-error"></p><button type="submit" class="save-button" data-i18n="save">Save</button><button type="button" id="cancelPinSetup" class="secondary-button" data-i18n="cancel">Cancel</button></form></section>
+    <section class="restore-overlay" id="restoreOverlay" hidden><div class="restore-card"><h2 data-i18n="restoreBackup">Restore backup</h2><p id="restoreSummary"></p><div class="restore-actions"><button type="button" id="replaceBackupButton" class="delete-person-button" data-i18n="replaceCurrentData">Replace current data</button><button type="button" id="mergeBackupButton" class="save-button" data-i18n="mergeBackup">Merge (skip duplicates by ID)</button><button type="button" id="cancelRestoreButton" class="secondary-button" data-i18n="cancel">Cancel</button></div></div></section>
+
+    <section class="month-card" aria-label="This month summary" hidden>
+      <div class="month-heading"><span data-i18n="thisMonth">This month</span><span id="monthLabel"></span></div>
+      <div class="summary-grid">
+        <div class="summary-item"><span data-i18n="credit">Credit</span><strong class="credit-text" id="monthCredit">₹0</strong></div>
+        <div class="summary-item"><span data-i18n="debit">Debit</span><strong class="debit-text" id="monthDebit">₹0</strong></div>
+        <div class="summary-item"><span data-i18n="balance">Balance</span><strong id="monthBalance">₹0</strong></div>
+      </div>
+    </section>
+
+    <section class="entry-card" id="entryCard" hidden>
+      <div class="section-title-row"><div><p class="eyebrow" data-i18n="quickEntry">QUICK ENTRY</p><h2 data-i18n="addTransaction">Add transaction</h2></div><span class="today-label" id="todayLabel"></span></div>
+      <form id="transactionForm" novalidate>
+        <div class="kind-toggle" role="group" aria-label="Transaction kind">
+          <button type="button" class="kind-button" data-kind="credit"><span>↙</span><span data-i18n="credit">Credit</span></button>
+          <button type="button" class="kind-button active" data-kind="debit"><span>↗</span><span data-i18n="debit">Debit</span></button>
+          <button type="button" class="kind-button" data-kind="transfer"><span>↔</span><span data-i18n="transfer">Transfer</span></button>
+        </div>
+
+        <fieldset class="field-group" id="typeFieldGroup"><legend data-i18n="chooseType">Choose a type</legend><div class="chip-list" id="typeChips"></div></fieldset>
+
+        <label class="field-label" for="amount" data-i18n="amount">Amount</label>
+        <div class="amount-wrap"><span aria-hidden="true">₹</span><input id="amount" name="amount" type="text" inputmode="decimal" autocomplete="off" placeholder="0" aria-label="Amount in rupees" required></div>
+        <p class="field-hint" data-i18n="amountHint">Enter the amount in rupees</p>
+
+        <div id="dynamicFields" class="dynamic-fields"></div>
+
+        <div class="two-columns">
+          <label class="field-label" for="date" data-i18n="date">Date</label>
+          <label class="field-label" for="note" data-i18n="noteOptional">Note <span>(optional)</span></label>
+          <input id="date" name="date" type="date" required>
+          <input id="note" name="note" type="text" maxlength="120" placeholder="Add a note" data-i18n-placeholder="notePlaceholder">
+        </div>
+
+        <p class="form-error" id="formError" role="alert" aria-live="polite"></p>
+        <button class="save-button" id="saveButton" type="submit"><span>＋</span><span data-i18n="saveTransaction">Save transaction</span></button>
+      </form>
+    </section>
+
+    <section class="recent-section" hidden>
+      <div class="section-title-row recent-heading"><div><p class="eyebrow" data-i18n="yourActivity">YOUR ACTIVITY</p><h2 data-i18n="recentEntries">Recent entries</h2></div><span class="count-pill" id="entryCount">0</span></div>
+      <div class="entry-list" id="recentEntries"></div>
+      <div class="empty-state" id="emptyState"><span class="empty-icon">✳</span><strong data-i18n="nothingYet">Nothing here yet</strong><p data-i18n="emptyHint">Your recent transactions will show up here.</p></div>
+    </section>
+
+    <section class="outstanding-view" id="outstandingView" hidden>
+      <div id="outstandingListView">
+        <div class="section-title-row outstanding-heading"><div><p class="eyebrow" data-i18n="peopleAndBalances">PEOPLE &amp; BALANCES</p><h2 data-i18n="outstanding">Outstanding</h2></div></div>
+        <div class="outstanding-summary">
+          <article class="outstanding-total receive-total"><span data-i18n="totalToReceive">Total to Receive</span><strong id="totalToReceive">₹0</strong></article>
+          <article class="outstanding-total give-total"><span data-i18n="totalToGive">Total to Give</span><strong id="totalToGive">₹0</strong></article>
+        </div>
+        <div class="outstanding-filters" role="tablist" aria-label="Outstanding filter">
+          <button class="outstanding-filter active" type="button" data-out-filter="all" data-i18n="all">All</button>
+          <button class="outstanding-filter" type="button" data-out-filter="receive" data-i18n="toReceive">To Receive</button>
+          <button class="outstanding-filter" type="button" data-out-filter="give" data-i18n="toGive">To Give</button>
+          <button class="outstanding-filter" type="button" data-out-filter="settled" data-i18n="settledTab">Settled</button>
+        </div>
+        <label class="outstanding-search"><span aria-hidden="true">⌕</span><input id="outstandingSearch" type="search" data-i18n-placeholder="searchPerson" placeholder="Search a person"></label>
+        <div class="outstanding-people" id="outstandingPeople"></div>
+        <div class="outstanding-empty" id="outstandingEmpty" hidden><span>↔</span><strong data-i18n="noUdharYet">No udhar yet.</strong><p data-i18n="addOneFromEntry">Add one from the Entry screen.</p></div>
+      </div>
+      <div id="personDetailView" hidden>
+        <button class="back-button" id="backToOutstanding" type="button"><span>←</span><span data-i18n="backToOutstanding">Back to Outstanding</span></button>
+        <div class="person-detail-heading"><div class="person-avatar" id="detailAvatar">P</div><div><p class="eyebrow" data-i18n="personDetail">PERSON DETAIL</p><h2 id="detailPersonName"></h2></div><button type="button" class="icon-action" id="renamePerson" data-i18n-title="renamePerson" aria-label="Rename person">✎</button></div>
+        <article class="detail-balance-card" id="detailBalanceCard"><span id="detailStatus"></span><strong id="detailBalance">₹0</strong></article>
+        <div class="quick-actions" aria-label="Quick Udhar actions">
+          <button type="button" data-quick-type="Udhar Given"><span>↗</span><small data-i18n="addUdharGiven">Add Udhar Given</small></button>
+          <button type="button" data-quick-type="Udhar Taken"><span>↙</span><small data-i18n="addUdharTaken">Add Udhar Taken</small></button>
+          <button type="button" data-quick-type="Udhar Received Back"><span>↙</span><small data-i18n="receivedBack">Received Back</small></button>
+          <button type="button" data-quick-type="Udhar Repaid"><span>↗</span><small data-i18n="repaid">Repaid</small></button>
+        </div>
+        <button type="button" id="settleFullAmount" class="settle-button" data-i18n="settleFullAmount">Settle full amount</button>
+        <button type="button" id="shareSummary" class="share-button" data-i18n="shareSummary">Share summary</button>
+        <button type="button" id="createPersonReminder" class="share-button" data-i18n="createReminder">Create reminder</button>
+        <div class="section-title-row history-heading"><div><p class="eyebrow" data-i18n="transactionHistory">TRANSACTION HISTORY</p><h2 data-i18n="history">History</h2></div></div>
+        <div class="person-history" id="personHistory"></div>
+        <button type="button" id="deletePerson" class="delete-person-button" data-i18n="deletePerson">Delete person</button>
+      </div>
+    </section>
+
+    <section class="settings-view" id="settingsView" hidden>
+      <div class="section-title-row"><div><p class="eyebrow" data-i18n="preferences">PREFERENCES</p><h2 data-i18n="settings">Settings</h2></div></div>
+      <section class="accounts-card"><div class="section-title-row"><div><p class="eyebrow" data-i18n="moneyPlaces">MONEY PLACES</p><h2 data-i18n="accounts">Accounts</h2></div><button id="addAccountButton" type="button" class="text-link" data-i18n="addAccount">+ Add account</button></div><div id="accountManagerList"></div></section>
+      <section class="accounts-card settings-section"><h2 data-i18n="categoriesSettings">Categories</h2><div class="settings-category-columns"><div><h3 data-i18n="expenseCategories">Expense categories</h3><div id="expenseCategorySettings"></div><button id="addExpenseCategory" type="button" class="secondary-button" data-i18n="addCategory">+ Add category</button></div><div><h3 data-i18n="investmentKinds">Investment kinds</h3><div id="investmentKindSettings"></div><button id="addInvestmentKind" type="button" class="secondary-button" data-i18n="addInvestmentKind">+ Add kind</button></div></div></section>
+      <section class="accounts-card settings-section"><h2 data-i18n="languageTheme">Language and Theme</h2><div class="settings-control-row"><label for="languageSelect" data-i18n="language">Language</label><select id="languageSelect" class="text-input"><option value="en" data-i18n="english">English</option><option value="gu" data-i18n="gujarati">ગુજરાતી</option></select></div><div class="settings-control-row"><label for="themeSelect" data-i18n="theme">Theme</label><select id="themeSelect" class="text-input"><option value="auto" data-i18n="autoTheme">Auto</option><option value="light" data-i18n="lightTheme">Light</option><option value="dark" data-i18n="darkTheme">Dark</option></select></div></section>
+      <section class="accounts-card settings-section"><h2 data-i18n="security">Security · PIN lock</h2><p class="settings-help" data-i18n="pinHelp">Set a 4-digit PIN to lock this app on this device.</p><button id="setPinButton" type="button" class="secondary-button" data-i18n="setPin">Set PIN</button><button id="removePinButton" type="button" class="secondary-button" data-i18n="removePin">Remove PIN</button><label class="settings-control-row"><span data-i18n="lockAfterBackground">Lock after background</span><select id="lockDelaySelect" class="text-input"><option value="0" data-i18n="immediately">Immediately</option><option value="60000" data-i18n="oneMinute">1 minute</option><option value="300000" data-i18n="fiveMinutes">5 minutes</option></select></label></section>
+      <section class="accounts-card settings-section"><h2 data-i18n="backupRestore">Backup and Restore</h2><aside class="backup-reminder-banner" id="backupBanner" hidden role="status"><span data-i18n="backupBannerText">Keep a safe copy of your data. Create a backup at least every 30 days.</span><button type="button" id="backupBannerButton" data-i18n="takeBackup">Back up now</button></aside><p class="settings-help" data-i18n="backupHelp">If your phone is lost or browser data is cleared, only a backup file can restore your data. Save it to Google Drive, WhatsApp, or email.</p><p class="settings-help" id="lastBackupLabel"></p><div class="backup-actions"><button id="exportBackupButton" type="button" class="secondary-button" data-i18n="exportBackup">Export Backup</button><button id="shareBackupButton" type="button" class="secondary-button" data-i18n="shareBackup">Share Backup</button><button id="importBackupButton" type="button" class="secondary-button" data-i18n="importBackup">Import Backup</button><input type="file" id="backupFileInput" accept="application/json,.json" hidden></div></section>
+      <section class="accounts-card settings-section danger-zone"><h2 data-i18n="data">Data</h2><p class="settings-help" data-i18n="deleteAllHelp">Permanently remove all data stored on this device.</p><button id="deleteAllDataButton" type="button" class="delete-person-button" data-i18n="deleteAllData">Delete all data</button></section>
+      <section class="accounts-card settings-section"><h2 data-i18n="about">About</h2><p id="appVersionLabel"></p><p id="storageUsedLabel"></p><button id="persistentStorageButton" type="button" class="secondary-button" data-i18n="requestPersistentStorage">Request persistent storage</button></section>
+    </section>
+    <section class="reminders-view" id="remindersView" hidden>
+      <div class="section-title-row reminder-page-heading"><div><p class="eyebrow" data-i18n="moneyReminders">MONEY REMINDERS</p><h2 data-i18n="reminders">Reminders</h2></div></div>
+      <div class="reminder-summary"><div><small data-i18n="pendingToReceive">Pending to Receive</small><strong id="reminderReceiveTotal">₹0</strong></div><div><small data-i18n="pendingToGive">Pending to Give</small><strong id="reminderGiveTotal">₹0</strong></div></div>
+      <div class="reminder-tabs" role="tablist"><button type="button" class="reminder-tab active" data-reminder-tab="Today" data-i18n="today">Today</button><button type="button" class="reminder-tab" data-reminder-tab="Upcoming" data-i18n="upcoming">Upcoming</button><button type="button" class="reminder-tab" data-reminder-tab="Overdue" data-i18n="overdue">Overdue</button><button type="button" class="reminder-tab" data-reminder-tab="Done" data-i18n="done">Done</button></div>
+      <div id="reminderList" class="reminder-list"></div><div class="reminder-empty" id="reminderEmpty" hidden></div>
+      <form class="reminder-form" id="reminderForm" hidden>
+        <div class="section-title-row"><h2 id="reminderFormTitle" data-i18n="addReminder">Add reminder</h2><button type="button" id="cancelReminderForm" class="account-sheet-close" data-i18n-aria-label="close">×</button></div>
+        <label class="field-label" for="reminderType" data-i18n="reminderType">Type</label><select class="text-input reminder-input" id="reminderType" required><option value="receive" data-i18n="toReceive">To Receive</option><option value="give" data-i18n="toGive">To Give</option></select>
+        <label class="field-label" for="reminderPerson" data-i18n="person">Person</label><div class="reminder-person-row"><select class="text-input reminder-input" id="reminderPerson" required></select><button type="button" id="addReminderPerson" class="secondary-button" data-i18n="addPerson">+ Add new person</button></div>
+        <label class="field-label" for="reminderAmount" data-i18n="amount">Amount</label><div class="amount-wrap reminder-amount-wrap"><span>₹</span><input class="reminder-input" id="reminderAmount" type="text" inputmode="decimal" autocomplete="off" required></div>
+        <div class="reminder-datetime"><div><label class="field-label" for="reminderDueDate" data-i18n="dueDate">Due date</label><input class="text-input reminder-input" id="reminderDueDate" type="date" required></div><div><label class="field-label" for="reminderTime" data-i18n="timeOptional">Time (optional)</label><input class="text-input reminder-input" id="reminderTime" type="time"></div></div>
+        <label class="field-label" for="reminderNote" data-i18n="noteOptional">Note (optional)</label><input class="text-input reminder-input" id="reminderNote" maxlength="180">
+        <div class="reminder-datetime"><div><label class="field-label" for="reminderRepeat" data-i18n="repeat">Repeat</label><select class="text-input reminder-input" id="reminderRepeat"><option value="None" data-i18n="none">None</option><option value="Weekly" data-i18n="weekly">Weekly</option><option value="Monthly" data-i18n="monthly">Monthly</option></select></div><div><label class="field-label" for="reminderStatus" data-i18n="status">Status</label><select class="text-input reminder-input" id="reminderStatus"><option value="Pending" data-i18n="pending">Pending</option><option value="Done" data-i18n="done">Done</option></select></div></div>
+        <p class="reminder-form-error" id="reminderFormError"></p><button class="save-button reminder-save" type="submit" data-i18n="saveReminder">Save reminder</button>
+      </form>
+      <button class="reminder-fab" id="addReminderButton" type="button" data-i18n-aria-label="addReminder">＋</button>
+    </section>
+    <section class="placeholder-view" id="placeholderView" hidden><h2 id="placeholderTitle"></h2><p data-i18n="comingLater">This section is ready for a future update.</p></section>
+  </main>
+
+  <nav class="bottom-nav" aria-label="Main navigation">
+    <button class="nav-item selected" type="button" data-screen="dashboard"><span>▦</span><small data-i18n="dashboard">Dashboard</small></button>
+    <button class="nav-item" type="button" data-screen="entry"><span>＋</span><small data-i18n="entry">Entry</small></button>
+    <button class="nav-item" type="button" data-screen="outstanding"><span>↔</span><small data-i18n="outstanding">Outstanding</small></button>
+    <button class="nav-item" type="button" data-screen="reminders"><span>◷</span><small data-i18n="reminders">Reminders</small></button>
+    <button class="nav-item" id="moreNavButton" type="button" data-screen="more"><span>•••</span><small data-i18n="more">More</small></button>
+  </nav>
+  <div class="more-menu" id="moreMenu" hidden><button type="button" data-more="reports" data-i18n="reports">Reports</button><button type="button" id="settingsMenuButton" data-more="settings" data-i18n="settings">Settings</button></div>
+  <div class="toast" id="toast" role="status" aria-live="polite"></div>
+
+  <script src="js/translations.js"></script>
+  <script src="js/db.js"></script>
+  <script src="js/app.js"></script>
+</body>
+</html>
